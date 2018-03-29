@@ -1,0 +1,8 @@
+KEIL/Uart.uvopt
+KEIL/Uart.uvgui.jeremy.hsiao
+lst/
+obj/
+*.bak
+
+KEIL/Nu_Link_Driver.ini
+KEIL/EventRecorderStub.scvd
