@@ -15,6 +15,11 @@
 #include "uart_app.h"
 #include "buffer.h"
 
+// For testing CRC demo code
+#include <stdio.h>
+#include <stdlib.h>
+// END - or testing CRC demo code
+
 /* Buffer size, this buffer for uart receive & send data. */
 #define UART_BUF_SIZE      64
 
@@ -50,6 +55,12 @@ void SYS_Init(void)
     SYS_LockReg();
 }
 
+// For testing CRC demo code
+#define MAX_PACKET_TEST 510
+#define CRC_PKT 32
+uint8_t CRCdata[MAX_PACKET_TEST+2];
+// END - For testing CRC demo code
+
 /* Main */
 int main(void)
 {
@@ -62,16 +73,91 @@ int main(void)
     UART_init();
     /* Init UART to 115200-8n1 for print message */
         
-    OutputString_with_newline("\r\n+-----------------------+\r");
-    OutputString_with_newline    ("| N575 Uart Demo Sample |\r");
-    OutputString_with_newline    ("+-----------------------+\r");
+    OutputString_with_newline("\r\n+----------------------+\r");
+    OutputString_with_newline    ("| N575 Uart + CRC Demo |\r");
+    OutputString_with_newline    ("+----------------------+\r");
 	OutputString_with_newline    ("Press any key to test.\r");
 	
 	while(1)
 	{
-//		memset( u8Buffer, '\0', sizeof(u8Buffer) );
-//		if( UART_Read( UART0, u8Buffer, sizeof(u8Buffer) ) > 0 )
-//			UART_Write( UART0, u8Buffer, sizeof(u8Buffer) );
+// For testing CRC demo code
+        int32_t  i,j,TestPassed=1;
+		uint16_t CalcCRC;
+        uint32_t *u32ptr;
+// END-For testing CRC demo code
+        
+// For testing CRC demo code
+        // Fill data array
+		for (i=0; i<MAX_PACKET_TEST; i++)
+			CRCdata[i]= rand();
+
+        CRC_Open();
+
+		// Test a 64byte CRC
+		u32ptr = (uint32_t *)CRCdata;
+        CRC_Init( CRC_LSB, CRC_PKT);
+		CalcCRC = CRC_Calc( u32ptr, CRC_PKT);
+        OutputString("Calculate CRC of ");
+		for (i=0;i<CRC_PKT;i++)
+			OutputHexValue_uint8(CRCdata[i]);
+        OutputString(" is ");
+        OutputHexValue_uint16(CalcCRC);
+        OutputString_with_newline("\r");
+
+		// Test by adding CRC to packet and recalculating
+		CRCdata[i++] = CalcCRC >> 8;
+		CRCdata[i++] = CalcCRC & 0xFF;
+		u32ptr = (uint32_t *)CRCdata;
+        CRC_Init( CRC_LSB, CRC_PKT+2);
+		CalcCRC = CRC_Calc( u32ptr, CRC_PKT+2);
+		if (CalcCRC != 0)
+			OutputString_with_newline("CRC Failed check\r");
+		else
+			OutputString_with_newline("CRC Passed check\r");
+
+		OutputString_with_newline("\n\rCalculate CRC of various packets and check results\r");
+		for (j=2; j<=MAX_PACKET_TEST ; j+=2)
+		{
+        // Do CRC for j bytes
+            u32ptr = (uint32_t *)CRCdata;
+            CRC_Init( CRC_LSB, j);
+			CalcCRC = CRC_Calc( u32ptr, j);
+
+            OutputString(".");
+            if (j%64==0)
+            {
+                OutputString("\r\nCRC ");
+                OutputDecValue(j);
+                OutputString(" bytes is ");
+                OutputHexValue_uint16(CalcCRC);
+                OutputString("\r\n ");
+            }
+            
+            // Now check CRC
+            CRCdata[j++] =  CRC->CHECKSUM >> 8;
+            CRCdata[j++] =  CRC->CHECKSUM & 0xff;
+            u32ptr = (uint32_t *)CRCdata;
+            CRC_Init( CRC_LSB, j);
+            CalcCRC = CRC_Calc( u32ptr, j);
+            j-=2;
+			if (CalcCRC != 0)
+			{
+				OutputString_with_newline("CRC Fail\r");
+				TestPassed =0;
+			}
+            CRCdata[j++] = rand();
+            CRCdata[j++] = rand();
+            j-=2;
+		}
+		if (TestPassed)
+			OutputString_with_newline("\n\rCRC driver sample passed all tests.\r");
+		else
+			OutputString_with_newline("\n\rCRC driver sample failed.\r");
+
+		CRC_Close();
+// END-For testing CRC demo code
+
+        while (1) {}
         
         if(!uart_input_queue_empty_status())
         {
@@ -79,6 +165,7 @@ int main(void)
             input_ch = uart_input_dequeue();
             while(uart_output_enqueue(input_ch)==0) {}
         }
+        
 	}
 }
 

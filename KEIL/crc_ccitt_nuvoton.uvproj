@@ -373,7 +373,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>DEBUG_ENABLE_SEMIHOST_</Define>
+              <Define>_DEBUG_ENABLE_SEMIHOST</Define>
               <Undefine></Undefine>
               <IncludePath>..\Library\CMSIS\Include;..\Library\Device\Nuvoton\N575\Include;..\Library\StdDriver\inc</IncludePath>
             </VariousControls>
@@ -473,6 +473,11 @@
               <FileName>sys.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Library\StdDriver\src\sys.c</FilePath>
+            </File>
+            <File>
+              <FileName>CRC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Library\StdDriver\src\CRC.c</FilePath>
             </File>
           </Files>
         </Group>
