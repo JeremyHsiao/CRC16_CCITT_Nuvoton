@@ -65,6 +65,15 @@ int itoa_16(uint32_t value, char* result)
 	return str_len;
 }
 
+void OutputDecValue(uint32_t value)
+{
+    char    temp_str[10+1];
+    int     temp_index, temp_length;
+    temp_length = itoa_10(value,temp_str);
+    for (temp_index=0;temp_index<temp_length;temp_index++)
+        uart_output_enqueue(temp_str[temp_index]);
+}
+
 void OutputHexValue(uint32_t value)
 {
     char    temp_str[8+1];
@@ -72,6 +81,20 @@ void OutputHexValue(uint32_t value)
     temp_length = itoa_16(value,temp_str);
     for (temp_index=0;temp_index<temp_length;temp_index++)
         uart_output_enqueue(temp_str[temp_index]);
+}
+
+void OutputHexValue_uint8(uint8_t value)
+{
+    uart_output_enqueue("0123456789abcdef" [value>>4]);
+    uart_output_enqueue("0123456789abcdef" [value&0x0f]);
+}
+
+void OutputHexValue_uint16(uint16_t value)
+{
+    uart_output_enqueue("0123456789abcdef" [value>>12]);
+    uart_output_enqueue("0123456789abcdef" [((value>>8)&0x0f)]);
+    uart_output_enqueue("0123456789abcdef" [((value>>4)&0x0f)]);
+    uart_output_enqueue("0123456789abcdef" [((value   )&0x0f)]);
 }
 
 int OutputString(char *str)

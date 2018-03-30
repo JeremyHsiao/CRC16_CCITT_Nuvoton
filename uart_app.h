@@ -19,4 +19,7 @@ extern int itoa_16(uint32_t value, char* result);
 extern int OutputString(char *str);
 extern int OutputString_with_newline(char *str);
 extern void OutputHexValue(uint32_t value);
+extern void OutputHexValue_uint8(uint8_t value);
+extern void OutputHexValue_uint16(uint16_t value);
+extern void OutputDecValue(uint32_t value);
 #endif // !_UART_APP_H_
