@@ -4,6 +4,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Timers;
 using MySerialLibrary;
+using System.Collections.Generic;
 
 namespace UARTViewer
 {
@@ -127,23 +128,46 @@ namespace UARTViewer
         }
 
         // 這個主程式專用的delay的內部資料與function
-        static bool MyUARTViewer_Delay_TimeOutIndicator = false;
-        private static void MyUARTViewer_Delay_OnTimedEvent(object source, ElapsedEventArgs e)
+        // This list stores all running timers. If timer timeout, it is removed at event. When BlueRat stop connection, all timers under this bluerat are also removed.
+        static private List<object> TimeOutTimerList = new List<object>();
+        // This list stores only running timers belonged to this bluerat object.
+        private List<object> MyOwnTimerList = new List<object>();
+
+        private void Stop_MyOwn_HomeMade_Delay()
         {
-            MyUARTViewer_Delay_TimeOutIndicator = true;
+            // Stop all timer created from own BlueRat Object (in list MyOwnTimerList)
+            foreach (var timer in MyOwnTimerList)
+            {
+                if (TimeOutTimerList.Contains(timer))        // still timer of this bluerat object is running?
+                {
+                    TimeOutTimerList.Remove(timer);         // if yes, force it to expire
+                    //Application.DoEvents();
+                }
+            }
+            MyOwnTimerList.Clear();                         // all timer expired, no need to keep record
+        }
+
+        static private void HomeMade_Delay_OnTimedEvent(object source, ElapsedEventArgs e)
+        {
+            //HomeMade_TimeOutIndicator = true;
+            TimeOutTimerList.Remove(source);
         }
 
         private void MyUARTViewer_Delay(int delay_ms)
         {
             if (delay_ms <= 0) return;
             System.Timers.Timer aTimer = new System.Timers.Timer(delay_ms);
-            aTimer.Elapsed += new ElapsedEventHandler(MyUARTViewer_Delay_OnTimedEvent);
-            MyUARTViewer_Delay_TimeOutIndicator = false;
+            aTimer.Elapsed += new ElapsedEventHandler(HomeMade_Delay_OnTimedEvent);
+            //HomeMade_TimeOutIndicator = false;
+            TimeOutTimerList.Add(aTimer);           // This list is to keep running timer until it reaches TimeOutEvent (as indicator of running timer)
+            MyOwnTimerList.Add(aTimer);             // This list record all timer created in this bluerat object -- to be removed after timer expired
             aTimer.Enabled = true;
-            while ((FormIsClosing == false) && (MyUARTViewer_Delay_TimeOutIndicator == false)) { Application.DoEvents(); Thread.Sleep(1); }
+            while ((FormIsClosing == false) && (TimeOutTimerList.Contains(aTimer) == true)) { Thread.Sleep(1); }
+            MyOwnTimerList.Remove(aTimer);          // timer expired, so remove it from the list recording timer created.
             aTimer.Stop();
             aTimer.Dispose();
         }
+        // END - 這個主程式專用的delay的內部資料與function
 
         private void btnConnectionControl_Click(object sender, EventArgs e)
         {
