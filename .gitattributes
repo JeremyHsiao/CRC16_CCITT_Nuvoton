@@ -1,16 +1,3 @@
-KEIL/Uart.uvopt
-KEIL/Uart.uvgui.jeremy.hsiao
-lst/
-obj/
-*.bak
-
-KEIL/Nu_Link_Driver.ini
-KEIL/EventRecorderStub.scvd
-*.uvopt
-*.hsiao
-NuvotonMCU/KEIL/Nu_Link_Driver.ini
-NuvotonMCU/KEIL/EventRecorderStub.scvd
-
 ###############################################################################
 # Set default behavior to automatically normalize line endings.
 ###############################################################################
@@ -74,6 +61,3 @@ NuvotonMCU/KEIL/EventRecorderStub.scvd
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
-UART_Tool/.vs/
-UART_Tool/UARTTool_Dev/bin/Debug/
-UART_Tool/UARTTool_Dev/bin/Release/
