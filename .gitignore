@@ -8,3 +8,5 @@ KEIL/Nu_Link_Driver.ini
 KEIL/EventRecorderStub.scvd
 *.uvopt
 *.hsiao
+NuvotonMCU/KEIL/Nu_Link_Driver.ini
+NuvotonMCU/KEIL/EventRecorderStub.scvd
