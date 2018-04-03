@@ -215,9 +215,9 @@ namespace UARTViewer
             }
         }
 
-        private static void LineReceivedHandler(object sender, GetLineEventArgs e)
+        private void LineReceivedHandler(object sender, GetLineEventArgs e)
         {
-            Console.WriteLine(e.Message);
+            AppendUARTViewerMessageLog(e.Message+"\n");
         }
 
         //
