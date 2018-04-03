@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Timers;
 using MySerialLibrary;
 using System.Collections.Generic;
+using System.Text;
 
 namespace UARTViewer
 {
@@ -109,6 +110,16 @@ namespace UARTViewer
             Serial_UpdatePortName();
         }
 
+        private void UpdateButtonAfterConnected()
+        {
+            btnCalcCRC.Enabled = true;
+        }
+
+        private void UpdateButtonAfterDisconnected()
+        {
+            btnCalcCRC.Enabled = false;
+        }
+
         //
         // Print Serial Port Message on RichTextBox
         //
@@ -179,6 +190,7 @@ namespace UARTViewer
                     MyUART_Exception_status = false;
                     UpdateToDisconnectButton();
                     DisableRefreshCOMButton();
+                    UpdateButtonAfterConnected();
                 }
                 else
                 {
@@ -194,6 +206,7 @@ namespace UARTViewer
                     if (MyUART_Exception_status)
                     { Serial_UpdatePortName(); }
                     MyUART_Exception_status = false;
+                    UpdateButtonAfterDisconnected();
                 }
                 else
                 {
@@ -211,6 +224,27 @@ namespace UARTViewer
         // End of UART part
         //
 
+        private List<Byte> ConvertInputString2ByteList(String input_str)
+        {
+            List<Byte> input_byte_for_crc_calculation = new List<Byte>();
+
+            if (input_str.IndexOf('0') == 0)        // if starting with'0', treat it as several hex byte data in C format
+            {
+                char[] Delimiter = { ' ', ',', '\x0d', '\x0a' };
+                string[] splited_str = input_str.Split(Delimiter);
+                foreach (string temp in splited_str)
+                {
+                    input_byte_for_crc_calculation.Add(Convert.ToByte(temp, 16));
+                }
+            }
+            else                            // otherwise, all string as input data
+            {
+                byte[] asciiBytes = Encoding.ASCII.GetBytes(input_str);
+                input_byte_for_crc_calculation.AddRange(asciiBytes);
+            }
+            return input_byte_for_crc_calculation;
+        }
+
         //
         // Form Events
         //
@@ -224,11 +258,21 @@ namespace UARTViewer
 
         private void MyUARTViewer_Closing(Object sender, FormClosingEventArgs e)
         {
-            Console.WriteLine("BlueRatDevViewer_FormClosing");
+            Console.WriteLine("MyUARTViewer_Closing");
             FormIsClosing = true;
-            //MyBlueRat.Stop_Current_Tx();
-            //MyBlueRat.Force_Init_BlueRat();
             MySerialPort.Serial_ClosePort();
+        }
+
+        private void btnCalcCRC_Click(object sender, EventArgs e)
+        {
+            String input_str = txtDataforCRC.Text;
+            List<Byte> crc_input_data = ConvertInputString2ByteList(input_str);
+
+            foreach (byte byte_data in crc_input_data)
+            {
+                rtbSignalData.AppendText(byte_data.ToString("X") + " ");
+            }
+            rtbSignalData.AppendText("\n");
         }
     }
 }

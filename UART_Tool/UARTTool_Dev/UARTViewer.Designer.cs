@@ -34,6 +34,8 @@
             this.btnRefreshCOMNo = new System.Windows.Forms.Button();
             this.lstMyComPort = new System.Windows.Forms.ListBox();
             this.btnConnectionControl = new System.Windows.Forms.Button();
+            this.txtDataforCRC = new System.Windows.Forms.TextBox();
+            this.btnCalcCRC = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // rtbSignalData
@@ -76,11 +78,32 @@
             this.btnConnectionControl.UseVisualStyleBackColor = true;
             this.btnConnectionControl.Click += new System.EventHandler(this.btnConnectionControl_Click);
             // 
+            // txtDataforCRC
+            // 
+            this.txtDataforCRC.Location = new System.Drawing.Point(200, 12);
+            this.txtDataforCRC.Multiline = true;
+            this.txtDataforCRC.Name = "txtDataforCRC";
+            this.txtDataforCRC.Size = new System.Drawing.Size(342, 45);
+            this.txtDataforCRC.TabIndex = 19;
+            // 
+            // btnCalcCRC
+            // 
+            this.btnCalcCRC.Enabled = false;
+            this.btnCalcCRC.Location = new System.Drawing.Point(548, 12);
+            this.btnCalcCRC.Name = "btnCalcCRC";
+            this.btnCalcCRC.Size = new System.Drawing.Size(68, 46);
+            this.btnCalcCRC.TabIndex = 20;
+            this.btnCalcCRC.Text = "Calc CRC";
+            this.btnCalcCRC.UseVisualStyleBackColor = true;
+            this.btnCalcCRC.Click += new System.EventHandler(this.btnCalcCRC_Click);
+            // 
             // UARTViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(620, 488);
+            this.Controls.Add(this.btnCalcCRC);
+            this.Controls.Add(this.txtDataforCRC);
             this.Controls.Add(this.btnConnectionControl);
             this.Controls.Add(this.lstMyComPort);
             this.Controls.Add(this.btnRefreshCOMNo);
@@ -89,9 +112,10 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "UARTViewer";
-            this.Text = "BlueRat Development Viewer";
+            this.Text = "CRC-CCITT-Nuvoton Viewer";
             this.Load += new System.EventHandler(this.MyUARTViewer_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -100,6 +124,8 @@
         private System.Windows.Forms.Button btnRefreshCOMNo;
         private System.Windows.Forms.ListBox lstMyComPort;
         private System.Windows.Forms.Button btnConnectionControl;
+        private System.Windows.Forms.TextBox txtDataforCRC;
+        private System.Windows.Forms.Button btnCalcCRC;
     }
 }
 
