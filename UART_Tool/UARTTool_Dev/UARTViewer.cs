@@ -3,9 +3,10 @@ using System.IO.Ports;
 using System.Threading;
 using System.Windows.Forms;
 using System.Timers;
-using MySerialLibrary;
 using System.Collections.Generic;
 using System.Text;
+using MySerialLibrary;
+using CRCLibrary;
 
 namespace UARTViewer
 {
@@ -267,6 +268,7 @@ namespace UARTViewer
         {
             String input_str = txtDataforCRC.Text;
             List<Byte> crc_input_data = ConvertInputString2ByteList(input_str);
+            UInt16 CRC_Value;
 
             // Display input data
             //foreach (byte byte_data in crc_input_data)
@@ -275,9 +277,22 @@ namespace UARTViewer
             //}
             //rtbSignalData.AppendText("\n");
 
+            // Calculate CRC byte-by-byte
+            CRC_CCITT16.InitCRCValue();
+            foreach (byte byte_data in crc_input_data)
+            {
+                CRC_Value = CRC_CCITT16.GetNextCRC(byte_data);
+                //rtbSignalData.AppendText(CRC_Value.ToString("X") + " ");
+            }
+            CRC_Value = CRC_CCITT16.GetCRCAfterFinalCRC();
+
+            // Calculate CRC all at once
+            CRC_Value = CRC_CCITT16.CalculateCRC4ByteList(crc_input_data);
+            rtbSignalData.AppendText(CRC_Value.ToString("X") + " ");
+
             // Base64-encoded before sending
             String EncodedString = Convert.ToBase64String(crc_input_data.ToArray());
-            //rtbSignalData.AppendText(EncodedString+"\n");
+            rtbSignalData.AppendText(EncodedString+"\n");
 
             // Prepare to send via UART
             EncodedString += "\n";

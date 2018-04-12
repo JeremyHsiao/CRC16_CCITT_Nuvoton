@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CRC_CCITT16.cs" />
     <Compile Include="MySerial.cs" />
     <Compile Include="UARTViewer.cs">
       <SubType>Form</SubType>
