@@ -203,7 +203,7 @@ namespace MySerialLibrary
                 try
                 {
                     int temp_index = 0;
-                    const int fixed_length = 16;
+                    const int fixed_length = 8;
 
                     while ((temp_index < byte_to_sent.Length) && (_serialPort.IsOpen == true))
                     {

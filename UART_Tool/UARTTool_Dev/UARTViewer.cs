@@ -268,11 +268,20 @@ namespace UARTViewer
             String input_str = txtDataforCRC.Text;
             List<Byte> crc_input_data = ConvertInputString2ByteList(input_str);
 
-            foreach (byte byte_data in crc_input_data)
-            {
-                rtbSignalData.AppendText(byte_data.ToString("X") + " ");
-            }
-            rtbSignalData.AppendText("\n");
+            // Display input data
+            //foreach (byte byte_data in crc_input_data)
+            //{
+            //    rtbSignalData.AppendText(byte_data.ToString("X") + " ");
+            //}
+            //rtbSignalData.AppendText("\n");
+
+            // Base64-encoded before sending
+            String EncodedString = Convert.ToBase64String(crc_input_data.ToArray());
+            //rtbSignalData.AppendText(EncodedString+"\n");
+
+            // Prepare to send via UART
+            EncodedString += "\n";
+            MySerialPort.SendToSerial(Encoding.ASCII.GetBytes(EncodedString));
         }
     }
 }
