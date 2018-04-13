@@ -449,6 +449,11 @@
               <FileType>1</FileType>
               <FilePath>..\uart_app.c</FilePath>
             </File>
+            <File>
+              <FileName>base64.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\base64.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
